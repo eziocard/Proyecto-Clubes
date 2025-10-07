@@ -13,13 +13,14 @@ export const AuthRegisterSchema = z.object({
     .string()
     .min(1, { message: "Ingresa tu nombre de usuario" })
     .trim(),
-  nombre_club: z.string().min(1, "El nombre es obligatorio"),
-  direccion: z.string().min(1, "La Direccion es obligatoria"),
+  nombre_club: z.string().min(1, "El nombre del club es obligatorio"),
+  imagen: z.union([z.string(), z.any()]).optional(),
   email: z.string().email("Correo electrónico inválido"),
   contraseña: z
     .string()
     .min(6, "La contraseña debe tener al menos 6 caracteres"),
   admin: z.boolean().optional(),
+  activo: z.boolean(),
 });
 
 export type AuthRegister = z.infer<typeof AuthRegisterSchema>;

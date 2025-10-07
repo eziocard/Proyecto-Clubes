@@ -144,6 +144,19 @@ body {
   cursor: pointer;
   transition: all 0.3s ease;
 }
+.backbtn{
+  background: transparent;
+  color:#D63215;
+  border: none;
+  margin-bottom: 5px;
+}
+
+input[type="file"] {
+  background-color: #f0f0f0; /* color del fondo del área del input */
+
+  padding: 10px;
+  border-radius: 8px;
+}
 
 #signup-section .btn-primary , #admin-section .btn-primary{
   background: white;

@@ -8,16 +8,34 @@ import {
   type AuthRegister,
 } from "../schema/AuthFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Table from "../components/Table";
-import type { clubes } from "../type/clubes";
+import Table from "../components/TableClubes";
+
 import gimasialogo from "./../assets/Clubes/Gimnasia temuco.png";
 import tornadologo from "./../assets/Clubes/Tornado Temuco.png";
+import defaultlogo from "./../assets/Clubes/default.png";
+import { CircleX } from "lucide-react";
 function Auth() {
   const [admin, setAdmin] = useState(true);
-  const [usuarios, setUsuarios] = useState<AuthRegister[]>();
-  const [clubes, setClubes] = useState<clubes[]>([
-    { nombre: "Tornado Temuco", imagen: tornadologo },
-    { nombre: "Gimnasia Olimpica Temuco", imagen: gimasialogo },
+
+  const [clubes, setClubes] = useState<AuthRegister[]>([
+    {
+      nombre_club: "Tornado Temuco",
+      contraseña: "123456789",
+      email: "tornado@gmail.com",
+      username: "tornado",
+      admin: false,
+      imagen: tornadologo,
+      activo: true,
+    },
+    {
+      nombre_club: "Gimnasia Olimpica Temuco",
+      contraseña: "123456789",
+      email: "gimnasia@gmail.com",
+      username: "gimnasia",
+      admin: false,
+      imagen: gimasialogo,
+      activo: true,
+    },
   ]);
   const [showTable, setShowTable] = useState(false);
   const {
@@ -27,6 +45,7 @@ function Auth() {
     formState: { errors: errorsSignup },
   } = useForm<AuthRegister>({
     resolver: zodResolver(AuthRegisterSchema),
+    defaultValues: { imagen: defaultlogo, admin: false, activo: true },
   });
   const {
     register: registerLogin,
@@ -38,10 +57,23 @@ function Auth() {
   });
 
   const onSubmitSignup = (data: AuthRegister) => {
-    console.log(data);
+    let imagenString = defaultlogo;
+
+    if (data.imagen instanceof FileList && data.imagen[0]) {
+      imagenString = URL.createObjectURL(data.imagen[0]);
+    } else if (typeof data.imagen === "string" && data.imagen) {
+      imagenString = data.imagen;
+    }
+
+    const nuevoClub: AuthRegister = {
+      ...data,
+      imagen: imagenString,
+    };
+
+    setClubes([...clubes, nuevoClub]);
     resetSignup();
   };
-
+  console.log(clubes);
   const onSubmitLogin = (data: AuthLogin) => {
     if (data.username === "admin" && data.contraseña === "admin") {
       setAdmin(true);
@@ -50,6 +82,13 @@ function Auth() {
       console.log("Usuario o contraseña incorrectos");
     }
     resetLogin();
+  };
+  const cambiarEstado = (username: string) => {
+    setClubes(
+      clubes.map((club) =>
+        club.username === username ? { ...club, activo: !club.activo } : club
+      )
+    );
   };
   return (
     <section id="auth-section">
@@ -67,7 +106,6 @@ function Auth() {
       ) : (
         <section id="signup-section">
           <h1 className="title">Registrar Club</h1>
-          <button onClick={() => setAdmin(!admin)}>volver</button>
 
           <form onSubmit={handleSignup(onSubmitSignup)}>
             <div className="input-group mb-3">
@@ -90,26 +128,24 @@ function Auth() {
               <input
                 type="text"
                 className="form-control"
-                placeholder="Ingresar Nombre"
+                placeholder="Ingresar Nombre del Club"
                 {...registerSignup("nombre_club")}
               />
-              <span className="input-group-text">Direccion</span>
+              <span className="input-group-text">Imagen</span>
               <input
-                type="text"
+                type="File"
+                id="upload-img"
+                accept="image/png"
                 className="form-control"
-                placeholder="Ingresar Direccion"
-                {...registerSignup("direccion")}
+                {...registerSignup("imagen")}
               />
             </div>
-            {(errorsSignup.nombre_club || errorsSignup.direccion) && (
+            {(errorsSignup.nombre_club || errorsSignup.imagen) && (
               <div className="error-group">
                 {errorsSignup.nombre_club && (
                   <p className="error-text">
                     {errorsSignup.nombre_club.message}
                   </p>
-                )}
-                {errorsSignup.direccion && (
-                  <p className="error-text">{errorsSignup.direccion.message}</p>
                 )}
               </div>
             )}
@@ -163,7 +199,15 @@ function Auth() {
               {showTable ? "Ocultar Lista" : "Ver Lista de Clubes"}
             </button>
           </div>
-          <div>{showTable ? <Table data={clubes} /> : <p>hola</p>}</div>
+          <div>
+            {showTable ? (
+              <Table data={clubes} funcion={cambiarEstado} />
+            ) : (
+              <button className="backbtn" onClick={() => setAdmin(!admin)}>
+                <CircleX /> Cerrar Sesion
+              </button>
+            )}
+          </div>
         </section>
       ) : (
         <section id="signin-section">
