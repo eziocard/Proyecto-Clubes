@@ -10,33 +10,14 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import Table from "../components/TableClubes";
 
-import gimasialogo from "./../assets/Clubes/Gimnasia temuco.png";
-import tornadologo from "./../assets/Clubes/Tornado Temuco.png";
 import defaultlogo from "./../assets/Clubes/default.png";
 import { CircleX } from "lucide-react";
+import useClubes from "../hooks/useClubes";
+import { useNavigate } from "react-router-dom";
 function Auth() {
-  const [admin, setAdmin] = useState(true);
-
-  const [clubes, setClubes] = useState<AuthRegister[]>([
-    {
-      nombre_club: "Tornado Temuco",
-      contraseña: "123456789",
-      email: "tornado@gmail.com",
-      username: "tornado",
-      admin: false,
-      imagen: tornadologo,
-      activo: true,
-    },
-    {
-      nombre_club: "Gimnasia Olimpica Temuco",
-      contraseña: "123456789",
-      email: "gimnasia@gmail.com",
-      username: "gimnasia",
-      admin: false,
-      imagen: gimasialogo,
-      activo: true,
-    },
-  ]);
+  const { clubes, setClubes, cambiarEstado } = useClubes();
+  const navigate = useNavigate();
+  const [admin, setAdmin] = useState(false);
   const [showTable, setShowTable] = useState(false);
   const {
     register: registerSignup,
@@ -73,23 +54,26 @@ function Auth() {
     setClubes([...clubes, nuevoClub]);
     resetSignup();
   };
-  console.log(clubes);
+
   const onSubmitLogin = (data: AuthLogin) => {
+    const verificar = clubes.find(
+      (club) =>
+        club.username === data.username && club.contraseña === data.contraseña
+    );
+
     if (data.username === "admin" && data.contraseña === "admin") {
       setAdmin(true);
       console.log("Login exitoso:", data);
+    } else if (verificar) {
+      console.log("Login exitoso:", verificar);
+      navigate("/Dashboard");
     } else {
       console.log("Usuario o contraseña incorrectos");
     }
+
     resetLogin();
   };
-  const cambiarEstado = (username: string) => {
-    setClubes(
-      clubes.map((club) =>
-        club.username === username ? { ...club, activo: !club.activo } : club
-      )
-    );
-  };
+
   return (
     <section id="auth-section">
       {!admin ? (
