@@ -42,6 +42,7 @@ aside {
 main{
     padding: 20px;
     width: 100%;
+    overflow-y: auto;
 }
 #inputs{
     display: flex;
