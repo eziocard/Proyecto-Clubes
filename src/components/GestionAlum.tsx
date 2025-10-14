@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import { useContext, useState } from "react";
 import InscripcionView from "./InscripcionView";
 import EditarView from "./EditarView";
-import useAlumnos from "../hooks/useAlumnos";
+
 import type { Alumno } from "../schema/AlumnoSchema";
 import ELiminarView from "./ELiminarView";
+import AlumnosContext from "../contexts/AlumnosContext";
+import { boolean } from "zod";
 
 function GestionAlum() {
   const [inscribir, setInscribir] = useState(true);
@@ -16,7 +18,7 @@ function GestionAlum() {
     Editar,
     Buscar,
     Eliminar,
-  } = useAlumnos();
+  } = useContext(AlumnosContext);
   const handleFilter = (filtro: number) => {
     setInscribir(filtro === 0);
     setEditar(filtro === 1);
@@ -24,8 +26,13 @@ function GestionAlum() {
   };
 
   const handleInscribirForm = (data: Alumno) => {
-    inscribiralumno(data);
-    alert("Alumno inscrito!");
+    const agregado = inscribiralumno(data);
+
+    if (agregado) {
+      alert("Alumno inscrito correctamente!");
+    } else {
+      alert("Error el alumno ya está inscrito.");
+    }
   };
 
   return (

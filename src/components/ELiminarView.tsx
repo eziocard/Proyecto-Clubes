@@ -13,22 +13,27 @@ function ELiminarView({ Buscar, Eliminar }: Props) {
 
   const handleBuscar = () => {
     const encontrado = Buscar(rutBuscar);
-    setAlumno(encontrado);
+    if (encontrado) {
+      setAlumno(encontrado);
+    } else {
+      alert("Alumno no encontrado");
+    }
   };
 
   const handleEliminar = (data: Alumno) => {
     if (alumno) {
       Eliminar(alumno.rut);
       setAlumno(undefined);
+      alert("Alumno Eliminado");
     }
   };
 
   return (
-    <>
+    <section id="eliminar-section">
       <h1>ELiminar Alumno</h1>
       <input
         type="text"
-        placeholder="Buscar RUT"
+        placeholder="Ingresar RUT '12345678-9'"
         value={rutBuscar}
         onChange={(e) => setRutBuscar(e.target.value)}
       />
@@ -55,7 +60,7 @@ function ELiminarView({ Buscar, Eliminar }: Props) {
           </tbody>
         </table>
       )}
-    </>
+    </section>
   );
 }
 

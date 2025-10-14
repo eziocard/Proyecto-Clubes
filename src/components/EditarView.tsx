@@ -13,7 +13,11 @@ function EditarView({ Buscar, Editar }: Props) {
 
   const handleBuscar = () => {
     const encontrado = Buscar(rutBuscar);
-    setAlumno(encontrado);
+    if (encontrado) {
+      setAlumno(encontrado);
+    } else {
+      alert("Alumno no encontrado");
+    }
   };
 
   const handleEditar = (data: Alumno) => {
@@ -28,7 +32,7 @@ function EditarView({ Buscar, Editar }: Props) {
       <h2>Buscar por Rut</h2>
       <input
         type="text"
-        placeholder="Buscar RUT"
+        placeholder="Ingresar RUT '12345678-9'"
         value={rutBuscar}
         onChange={(e) => setRutBuscar(e.target.value)}
       />

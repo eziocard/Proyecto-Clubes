@@ -3,8 +3,9 @@ import "./styles/DashboardStyles.css";
 import AsistView from "../components/AsistView";
 import { CircleX } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import InscripcionView from "../components/InscripcionView";
 import GestionAlum from "../components/GestionAlum";
+import AlumnosContext from "../contexts/AlumnosContext";
+import useAlumnos from "../hooks/useAlumnos";
 type Props = {};
 
 function Dashboard({}: Props) {
@@ -19,6 +20,7 @@ function Dashboard({}: Props) {
     setGestionar(fila === 3);
   };
   const navigate = useNavigate();
+  const { AlumnosList, Buscar, Editar, Eliminar, Inscribir } = useAlumnos();
   return (
     <section id="section-dashboard">
       <aside>
@@ -71,13 +73,17 @@ function Dashboard({}: Props) {
         </div>
       </aside>
       <main>
-        {asistencia ? (
-          <AsistView />
-        ) : Gestionar ? (
-          <GestionAlum />
-        ) : (
-          "Seleccione una opción"
-        )}
+        <AlumnosContext.Provider
+          value={{ AlumnosList, Buscar, Editar, Eliminar, Inscribir }}
+        >
+          {asistencia ? (
+            <AsistView />
+          ) : Gestionar ? (
+            <GestionAlum />
+          ) : (
+            "Seleccione una opción"
+          )}
+        </AlumnosContext.Provider>
       </main>
     </section>
   );

@@ -4,13 +4,16 @@ import type { Alumno } from "../schema/AlumnoSchema";
 function useAlumnos() {
   const [AlumnosList, setAlumnosList] = useState<Alumno[]>([]);
 
-  const Inscribir = (data: Alumno) => {
-    setAlumnosList((prev) => {
-      const existe = prev.some((a) => a.rut === data.rut);
-      if (existe) return prev;
-      return [...prev, data];
-    });
+  const Inscribir = (data: Alumno): boolean => {
+    const existe = AlumnosList.some((a) => a.rut === data.rut);
+    if (existe) {
+      return false;
+    }
+
+    setAlumnosList((prev) => [...prev, data]);
+    return true;
   };
+
   const Editar = (rut: string, datosActualizados: Partial<Alumno>) => {
     setAlumnosList((prev) =>
       prev.map((alumno) =>

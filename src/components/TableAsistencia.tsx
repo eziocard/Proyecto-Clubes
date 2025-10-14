@@ -1,16 +1,18 @@
-import React from "react";
+import type { Asistencia } from "../type/Asistencia";
 
-type Props = {};
+type Props = {
+  asistencias: Asistencia[];
+};
 
-function TableAsistencia({}: Props) {
+function TableAsistencia({ asistencias }: Props) {
   return (
     <table className="table table-hover">
       <thead>
         <tr>
-          <th scope="col">id</th>
+          <th scope="col">Rut</th>
           <th scope="col">Nombre</th>
           <th scope="col">Apellido</th>
-          <th scope="col">Segundo Apellido</th>
+
           <th scope="col">Grupo</th>
           <th scope="col" style={{ display: "flex", justifyContent: "center" }}>
             Asistencia
@@ -18,26 +20,22 @@ function TableAsistencia({}: Props) {
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <th scope="row">1</th>
-          <td>Json</td>
-          <td>Derulo</td>
-          <td>diaz</td>
-          <td>Iniciacion</td>
-          <td>
-            <div
-              className="form-check"
-              style={{ display: "flex", justifyContent: "center" }}
-            >
+        {asistencias.map((alumno) => (
+          <tr key={alumno.rut}>
+            <th>{alumno.rut}</th>
+            <td>{alumno.nombre}</td>
+            <td>{alumno.apellido}</td>
+            <td>{alumno.grupos}</td>
+            <td style={{ textAlign: "center" }}>
               <input
                 className="form-check-input"
                 type="checkbox"
-                value=""
-                id="checkDefault"
+                checked={alumno.check ?? false}
+                onChange={() => console.log(`Cambio ${alumno.nombre}`)}
               />
-            </div>
-          </td>
-        </tr>
+            </td>
+          </tr>
+        ))}
       </tbody>
     </table>
   );
