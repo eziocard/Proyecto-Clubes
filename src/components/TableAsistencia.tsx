@@ -1,41 +1,49 @@
-import type { Asistencia } from "../type/Asistencia";
+import type { Alumno } from "../schema/AlumnoSchema";
+
+type Asistencia = Alumno & { check: boolean };
 
 type Props = {
   asistencias: Asistencia[];
+  onCheckChange: (rut: string, valor: boolean) => void;
 };
 
-function TableAsistencia({ asistencias }: Props) {
+function TableAsistencia({ asistencias, onCheckChange }: Props) {
   return (
     <table className="table table-hover">
       <thead>
         <tr>
-          <th scope="col">Rut</th>
-          <th scope="col">Nombre</th>
-          <th scope="col">Apellido</th>
-
-          <th scope="col">Grupo</th>
-          <th scope="col" style={{ display: "flex", justifyContent: "center" }}>
-            Asistencia
-          </th>
+          <th>Rut</th>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>Grupo</th>
+          <th style={{ textAlign: "center" }}>Asistencia</th>
         </tr>
       </thead>
       <tbody>
-        {asistencias.map((alumno) => (
-          <tr key={alumno.rut}>
-            <th>{alumno.rut}</th>
-            <td>{alumno.nombre}</td>
-            <td>{alumno.apellido}</td>
-            <td>{alumno.grupos}</td>
-            <td style={{ textAlign: "center" }}>
-              <input
-                className="form-check-input"
-                type="checkbox"
-                checked={alumno.check ?? false}
-                onChange={() => console.log(`Cambio ${alumno.nombre}`)}
-              />
+        {asistencias.length === 0 ? (
+          <tr>
+            <td colSpan={5} style={{ textAlign: "center" }}>
+              No hay alumnos inscritos
             </td>
           </tr>
-        ))}
+        ) : (
+          asistencias.map((alumno) => (
+            <tr key={alumno.rut}>
+              <th scope="row">{alumno.rut}</th>
+              <td>{alumno.nombre}</td>
+              <td>{alumno.apellido}</td>
+              <td>{alumno.grupos}</td>
+              <td style={{ textAlign: "center" }}>
+                <input
+                  type="checkbox"
+                  className="form-check-input"
+                  checked={alumno.check}
+                  onChange={(e) => onCheckChange(alumno.rut, e.target.checked)}
+                />
+              </td>
+            </tr>
+          ))
+        )}
       </tbody>
     </table>
   );
