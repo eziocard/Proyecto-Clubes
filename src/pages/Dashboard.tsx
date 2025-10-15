@@ -6,21 +6,20 @@ import { useNavigate } from "react-router-dom";
 import GestionAlum from "../components/GestionAlum";
 import AlumnosContext from "../contexts/AlumnosContext";
 import useAlumnos from "../hooks/useAlumnos";
+
 type Props = {};
 
 function Dashboard({}: Props) {
   const [asistencia, setAsistencia] = useState(false);
-  const [anuncios, setAnuncios] = useState(false);
-  const [horarios, setHorarios] = useState(false);
+  const { AlumnosList, Buscar, Editar, Eliminar, Inscribir } = useAlumnos();
   const [Gestionar, setGestionar] = useState(false);
   const handleClick = (fila: number) => {
     setAsistencia(fila === 0);
-    setAnuncios(fila === 1);
-    setHorarios(fila === 2);
-    setGestionar(fila === 3);
+
+    setGestionar(fila === 1);
   };
   const navigate = useNavigate();
-  const { AlumnosList, Buscar, Editar, Eliminar, Inscribir } = useAlumnos();
+
   return (
     <section id="section-dashboard">
       <aside>
@@ -35,30 +34,13 @@ function Dashboard({}: Props) {
           >
             Asistencia
           </button>
-          <button
-            type="button"
-            className={`list-group-item list-group-item-${
-              anuncios ? "action" : " "
-            }`}
-            onClick={() => handleClick(1)}
-          >
-            Anuncios
-          </button>
-          <button
-            type="button"
-            className={`list-group-item list-group-item-${
-              horarios ? "action" : " "
-            }`}
-            onClick={() => handleClick(2)}
-          >
-            Horarios
-          </button>
+
           <button
             type="button"
             className={`list-group-item list-group-item-${
               Gestionar ? "action" : " "
             }`}
-            onClick={() => handleClick(3)}
+            onClick={() => handleClick(1)}
           >
             Gestion Alumnos
           </button>

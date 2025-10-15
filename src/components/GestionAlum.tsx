@@ -5,7 +5,6 @@ import EditarView from "./EditarView";
 import type { Alumno } from "../schema/AlumnoSchema";
 import ELiminarView from "./ELiminarView";
 import AlumnosContext from "../contexts/AlumnosContext";
-import { boolean } from "zod";
 
 function GestionAlum() {
   const [inscribir, setInscribir] = useState(true);
@@ -13,7 +12,6 @@ function GestionAlum() {
   const [eliminar, setEliminar] = useState(false);
 
   const {
-    AlumnosList,
     Inscribir: inscribiralumno,
     Editar,
     Buscar,

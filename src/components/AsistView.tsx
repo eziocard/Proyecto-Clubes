@@ -2,6 +2,7 @@ import { useContext, useMemo, useState } from "react";
 import TableAsistencia from "./TableAsistencia";
 import "./styles/AsistViewStyles.css";
 import AlumnosContext from "../contexts/AlumnosContext";
+import type { Alumno } from "../schema/AlumnoSchema";
 
 function AsistView() {
   const [Iniciacion, setIniciacion] = useState(false);
@@ -57,7 +58,7 @@ function AsistView() {
   const handleConfirmar = () => {
     if (!fechaSeleccionada)
       return alert("Selecciona una fecha antes de confirmar.");
-    alert(`Asistencia del ${fechaSeleccionada} guardada correctamente.`);
+    alert(` Asistencia del ${fechaSeleccionada} guardada correctamente.`);
     console.log("Registro completo:", registro);
   };
 
