@@ -90,6 +90,13 @@ function Auth() {
               Si deseas contratar nuestro servicio de manera personalizada
               contactanos a : rjlopezdiaz@gmail.com
             </p>
+            <p>Link del codigo en Github</p>
+            <a
+              href="https://github.com/eziocard/Proyecto-Clubes"
+              style={{ color: "red", fontSize: "20px" }}
+            >
+              Github
+            </a>
           </section>
         ) : (
           <section id="signup-section">
@@ -245,7 +252,7 @@ function Auth() {
       <iframe
         width="560"
         height="315"
-        src="https://www.youtube.com/embed/YmrsnCq41Og?si=op0JXIAiIlMVMUZw"
+        src="https://www.youtube.com/embed/vy9M96Atuk0?si=6-801IWPvmT6QOIj"
         title="YouTube video player"
         frameBorder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
