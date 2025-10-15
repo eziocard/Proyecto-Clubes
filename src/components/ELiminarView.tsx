@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import {useState} from "react";
 import type { Alumno } from "../schema/AlumnoSchema";
 import { Trash2 } from "lucide-react";
 import "./styles/EliminarStyles.css";
@@ -20,7 +20,7 @@ function ELiminarView({ Buscar, Eliminar }: Props) {
     }
   };
 
-  const handleEliminar = (data: Alumno) => {
+  const handleEliminar = (alumno:Alumno) => {
     if (alumno) {
       Eliminar(alumno.rut);
       setAlumno(undefined);

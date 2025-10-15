@@ -1,7 +1,7 @@
 import React from "react";
 import type { AuthRegister } from "../schema/AuthFormSchema";
 import defaultlogo from "./../assets/Clubes/default.png";
-import { AlignJustify, Wifi, WifiOff } from "lucide-react";
+import { Wifi, WifiOff } from "lucide-react";
 
 type Props = {
   data: AuthRegister[];
