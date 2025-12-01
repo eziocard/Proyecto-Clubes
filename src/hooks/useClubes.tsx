@@ -1,38 +1,36 @@
-import { useState } from "react";
-import gimasialogo from "./../assets/Clubes/Gimnasia temuco.png";
-import tornadologo from "./../assets/Clubes/Tornado Temuco.png";
-
-import type { AuthRegister } from "../schema/AuthFormSchema";
+import React from "react";
+import type { Team } from "../schema/clubesSchema";
+import { API_URL } from "../auth/constants";
+import { useAuth } from "../auth/AuthProvider";
 
 function useClubes() {
-  const [clubes, setClubes] = useState<AuthRegister[]>([
-    {
-      nombre_club: "Tornado Temuco",
-      contraseña: "123456789",
-      email: "tornado@gmail.com",
-      username: "tornado",
-      admin: false,
-      imagen: tornadologo,
-      activo: true,
-    },
-    {
-      nombre_club: "Gimnasia Olimpica Temuco",
-      contraseña: "123456789",
-      email: "gimnasia@gmail.com",
-      username: "gimnasia",
-      admin: false,
-      imagen: gimasialogo,
-      activo: true,
-    },
-  ]);
-  const cambiarEstado = (username: string) => {
-    setClubes(
-      clubes.map((club) =>
-        club.username === username ? { ...club, activo: !club.activo } : club
-      )
-    );
+  const auth = useAuth();
+
+  const crearClub = async (data: Team) => {
+    console.log(auth.token);
+    try {
+      const res = await fetch("http://127.0.0.1:8000/api/teams", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth.token}`, // <---- IMPORTANTE
+        },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          state: true,
+          image: null,
+        }),
+      });
+
+      const json = await res.json();
+      return json;
+    } catch (error) {
+      console.error("Error creando club:", error);
+    }
   };
-  return { clubes, setClubes, cambiarEstado };
+
+  return { crearClub };
 }
 
 export default useClubes;

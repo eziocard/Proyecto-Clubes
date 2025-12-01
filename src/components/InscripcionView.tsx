@@ -3,6 +3,7 @@ import { AlumnoSchema, grupos, type Alumno } from "../schema/AlumnoSchema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import "./styles/InscripcionStyles.css";
+import { useAuth } from "../auth/AuthProvider";
 
 type Props = {
   alumnoInicial?: Alumno;
@@ -10,9 +11,9 @@ type Props = {
 };
 
 function InscripcionView({ alumnoInicial, onSubmitForm }: Props) {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [selectedGrupo, setSelectedGrupo] =
-    useState<string>("Seleccionar grupo");
+  const auth = useAuth();
+
+  useState<string>("Seleccionar grupo");
 
   const {
     register,
@@ -22,19 +23,14 @@ function InscripcionView({ alumnoInicial, onSubmitForm }: Props) {
     formState: { errors },
   } = useForm<Alumno>({
     resolver: zodResolver(AlumnoSchema),
+    defaultValues: {
+      team_id: auth.getUser()?.team_id,
+    },
   });
-
-  useEffect(() => {
-    if (alumnoInicial) {
-      reset(alumnoInicial);
-      setSelectedGrupo(alumnoInicial.grupos);
-    }
-  }, [alumnoInicial, reset]);
 
   const onSubmit = (data: Alumno) => {
     onSubmitForm(data);
     reset();
-    setSelectedGrupo("Seleccionar grupo");
   };
 
   return (
@@ -47,11 +43,9 @@ function InscripcionView({ alumnoInicial, onSubmitForm }: Props) {
             type="text"
             className="form-control"
             placeholder="Ingresar Nombre"
-            {...register("nombre")}
+            {...register("name")}
           />
-          {errors.nombre && (
-            <p className="error-text">{errors.nombre.message}</p>
-          )}
+          {errors.name && <p className="error-text">{errors.name.message}</p>}
         </div>
 
         <div className="form-group">
@@ -60,10 +54,10 @@ function InscripcionView({ alumnoInicial, onSubmitForm }: Props) {
             type="text"
             className="form-control"
             placeholder="Ingresar Apellido"
-            {...register("apellido")}
+            {...register("lastname")}
           />
-          {errors.apellido && (
-            <p className="error-text">{errors.apellido.message}</p>
+          {errors.lastname && (
+            <p className="error-text">{errors.lastname.message}</p>
           )}
         </div>
 
@@ -86,43 +80,38 @@ function InscripcionView({ alumnoInicial, onSubmitForm }: Props) {
             placeholder="Ingresar Edad"
             min={1}
             step={1}
-            {...register("edad", { valueAsNumber: true })}
+            {...register("age", { valueAsNumber: true })}
           />
-          {errors.edad && <p className="error-text">{errors.edad.message}</p>}
+          {errors.age && <p className="error-text">{errors.age.message}</p>}
         </div>
 
         <div className="form-group">
-          <label>Grupo</label>
-          <div className="dropdown">
-            <button
-              type="button"
-              className="btn btn-secondary dropdown-toggle"
-              onClick={() => setDropdownOpen(!dropdownOpen)}
-            >
-              {selectedGrupo}
-            </button>
-            <ul className={`dropdown-menu ${dropdownOpen ? "show" : ""}`}>
-              {grupos.map((e) => (
-                <li key={e}>
-                  <button
-                    type="button"
-                    className="dropdown-item"
-                    onClick={() => {
-                      setValue("grupos", e);
-                      setSelectedGrupo(e);
-                      setDropdownOpen(false);
-                    }}
-                  >
-                    {e}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-          {errors.grupos && (
-            <span className="text-danger">{errors.grupos.message}</span>
-          )}
+          <label>Nivel</label>
+          <input
+            type="number"
+            className="form-control"
+            placeholder="Ingresar Edad"
+            min={1}
+            step={1}
+            {...register("level", { valueAsNumber: true })}
+          />
+          {errors.level && <p className="error-text">{errors.level.message}</p>}
         </div>
+
+        {auth.getUser()?.role === "superuser" && (
+          <div className="form-group">
+            <label>Equipo</label>
+            <input
+              type="number"
+              className="form-control"
+              placeholder="Ingresar id de Equipo"
+              {...register("team_id")}
+            />
+            {errors.team_id && (
+              <p className="error-text">{errors.team_id.message}</p>
+            )}
+          </div>
+        )}
 
         <button type="submit" className="btn btn-primary mt-3">
           {alumnoInicial ? "Editar" : "Inscribir"}

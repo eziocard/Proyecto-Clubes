@@ -8,17 +8,20 @@ import {
   type AuthRegister,
 } from "../schema/AuthFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Table from "../components/TableClubes";
 
 import defaultlogo from "./../assets/Clubes/default.png";
-import { CircleX } from "lucide-react";
-import useClubes from "../hooks/useClubes";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
+import { useAuth } from "../auth/AuthProvider";
+import { API_URL } from "../auth/constants";
+
 function Auth() {
-  const { clubes, setClubes, cambiarEstado } = useClubes();
-  const navigate = useNavigate();
+  const auth = useAuth();
+  const goTo = useNavigate();
+  const [ErrorResponse, setErrorResponse] = useState("");
+
   const [admin, setAdmin] = useState(false);
   const [showTable, setShowTable] = useState(false);
+
   const {
     register: registerSignup,
     handleSubmit: handleSignup,
@@ -28,6 +31,7 @@ function Auth() {
     resolver: zodResolver(AuthRegisterSchema),
     defaultValues: { imagen: defaultlogo, admin: false, activo: true },
   });
+
   const {
     register: registerLogin,
     handleSubmit: handleLogin,
@@ -46,35 +50,44 @@ function Auth() {
       imagenString = data.imagen;
     }
 
-    const nuevoClub: AuthRegister = {
-      ...data,
-      imagen: imagenString,
-    };
-
-    setClubes([...clubes, nuevoClub]);
     resetSignup();
   };
 
-  const onSubmitLogin = (data: AuthLogin) => {
-    const verificar = clubes.find(
-      (club) =>
-        club.username === data.username &&
-        club.contraseña === data.contraseña &&
-        club.activo == true
-    );
+  // LOGIN CORREGIDO PARA LARAVEL
+  async function onSubmitLogin(data: AuthLogin) {
+    try {
+      const response = await fetch(`${API_URL}/login`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
+      });
 
-    if (data.username === "admin" && data.contraseña === "admin") {
-      setAdmin(true);
-      console.log("Login exitoso:", data);
-    } else if (verificar) {
-      console.log("Login exitoso:", verificar);
-      navigate("/Dashboard");
-    } else {
-      console.log("Usuario o contraseña incorrectos");
+      const json = await response.json();
+      console.log(json);
+      if (response.ok) {
+        setErrorResponse("");
+
+        if (json.token) {
+          auth.saveUser(json);
+          goTo("/dashboard");
+        }
+      } else {
+        setErrorResponse(json.message);
+      }
+    } catch (error) {
+      console.log("Error en login:", error);
     }
+  }
 
-    resetLogin();
-  };
+  if (auth.isAuthenticated) {
+    return <Navigate to="/dashboard" />;
+  }
 
   return (
     <>
@@ -90,7 +103,7 @@ function Auth() {
               Si deseas contratar nuestro servicio de manera personalizada
               contactanos a : rjlopezdiaz@gmail.com
             </p>
-            <p>Link del codigo en Github</p>
+            <p>Link del código en Github</p>
             <a
               href="https://github.com/eziocard/Proyecto-Clubes"
               style={{ color: "red", fontSize: "20px" }}
@@ -104,9 +117,7 @@ function Auth() {
 
             <form onSubmit={handleSignup(onSubmitSignup)}>
               <div className="input-group mb-3">
-                <span className="input-group-text" id="basic-addon1">
-                  @
-                </span>
+                <span className="input-group-text">@</span>
                 <input
                   type="text"
                   className="form-control"
@@ -129,26 +140,14 @@ function Auth() {
                 <span className="input-group-text">Imagen</span>
                 <input
                   type="File"
-                  id="upload-img"
                   accept="image/png"
                   className="form-control"
                   {...registerSignup("imagen")}
                 />
               </div>
-              {(errorsSignup.nombre_club || errorsSignup.imagen) && (
-                <div className="error-group">
-                  {errorsSignup.nombre_club && (
-                    <p className="error-text">
-                      {errorsSignup.nombre_club.message}
-                    </p>
-                  )}
-                </div>
-              )}
 
               <div className="input-group mb-3">
-                <span className="input-group-text" id="basic-addon2">
-                  Correo
-                </span>
+                <span className="input-group-text">Correo</span>
                 <input
                   type="text"
                   className="form-control"
@@ -156,13 +155,9 @@ function Auth() {
                   {...registerSignup("email")}
                 />
               </div>
-              {errorsSignup.email && (
-                <p className="error-text">{errorsSignup.email.message}</p>
-              )}
+
               <div className="input-group mb-3">
-                <span className="input-group-text" id="basic-addon2">
-                  Contraseña
-                </span>
+                <span className="input-group-text">Contraseña</span>
                 <input
                   type="password"
                   className="form-control"
@@ -170,85 +165,68 @@ function Auth() {
                   {...registerSignup("contraseña")}
                 />
               </div>
-              {errorsSignup.contraseña && (
-                <p className="error-text">{errorsSignup.contraseña.message}</p>
-              )}
-              <div className="col-auto">
-                <button type="submit" className="btn btn-primary mb-3">
-                  Registrar Club
-                </button>
-              </div>
+
+              <button type="submit" className="btn btn-primary mb-3">
+                Registrar Club
+              </button>
             </form>
           </section>
         )}
 
-        {admin ? (
-          <section id="admin-mode-section">
-            <h1 className="title">Modo administrador</h1>
-            <div className="col-auto">
-              <button
-                type="submit"
-                className="btn btn-primary mb-3"
-                onClick={() => setShowTable(!showTable)}
-              >
-                {showTable ? "Ocultar Lista" : "Ver Lista de Clubes"}
-              </button>
-            </div>
-            <div>
-              {showTable ? (
-                <Table data={clubes} funcion={cambiarEstado} />
-              ) : (
-                <button className="backbtn" onClick={() => setAdmin(!admin)}>
-                  <CircleX /> Cerrar Sesion
-                </button>
-              )}
-            </div>
-          </section>
-        ) : (
+        {!admin ? (
           <section id="signin-section">
             <h1 className="title">Iniciar Sesión</h1>
             <form onSubmit={handleLogin(onSubmitLogin)}>
               <div className="input-group mb-3">
-                <span className="input-group-text" id="basic-addon1">
-                  Username
-                </span>
+                <span className="input-group-text">Email</span>
                 <input
                   type="text"
                   className="form-control"
-                  placeholder="Ingresar username"
-                  {...registerLogin("username")}
+                  placeholder="Ingresar email"
+                  {...registerLogin("email")}
                 />
               </div>
-              {errorsLogin.username && (
-                <p className="error-text-login">
-                  {errorsLogin.username.message}
-                </p>
+              {errorsLogin.email && (
+                <p className="error-text-login">{errorsLogin.email.message}</p>
               )}
+
               <div className="input-group mb-3">
-                <span className="input-group-text" id="basic-addon1">
-                  Contraseña
-                </span>
+                <span className="input-group-text">Contraseña</span>
                 <input
                   type="password"
                   className="form-control"
                   placeholder="Ingresar Contraseña"
-                  {...registerLogin("contraseña")}
+                  {...registerLogin("password")}
                 />
               </div>
-              {errorsLogin.contraseña && (
+              {errorsLogin.password && (
                 <p className="error-text-login">
-                  {errorsLogin.contraseña.message}
+                  {errorsLogin.password.message}
                 </p>
               )}
-              <div className="col-auto">
-                <button type="submit" className="btn btn-primary mb-3">
-                  Ingresar
-                </button>
-              </div>
+
+              <button type="submit" className="btn btn-primary mb-3">
+                Ingresar
+              </button>
+
+              {ErrorResponse && (
+                <p className="error-text-login">{ErrorResponse}</p>
+              )}
             </form>
+          </section>
+        ) : (
+          <section id="admin-mode-section">
+            <h1 className="title">Modo administrador</h1>
+            <button
+              className="btn btn-primary mb-3"
+              onClick={() => setShowTable(!showTable)}
+            >
+              {showTable ? "Ocultar Lista" : "Ver Lista de Clubes"}
+            </button>
           </section>
         )}
       </section>
+
       <iframe
         width="560"
         height="315"

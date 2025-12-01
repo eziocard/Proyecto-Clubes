@@ -1,11 +1,8 @@
 import { z } from "zod";
 
 export const AuthLoginSchema = z.object({
-  username: z
-    .string()
-    .min(1, { message: "Ingresa tu nombre de usuario" })
-    .trim(),
-  contraseña: z.string().min(1, { message: "Ingresa tu contraseña" }),
+  email: z.string().email("Correo electrónico inválido"),
+  password: z.string().min(1, { message: "Ingresa tu contraseña" }),
 });
 export type AuthLogin = z.infer<typeof AuthLoginSchema>;
 export const AuthRegisterSchema = z.object({
