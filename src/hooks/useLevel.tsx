@@ -1,5 +1,3 @@
-import React, { useEffect } from "react";
-import type { Team } from "../schema/clubesSchema";
 import { API_URL } from "../constants";
 import { useAuth } from "../Auth/AuthProvider";
 import type { Level } from "../schema/LevelsSchema";

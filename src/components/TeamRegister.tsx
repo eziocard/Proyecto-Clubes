@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { TeamSchema, type Team } from "../schema/clubesSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -7,7 +7,6 @@ import useTeam from "../hooks/useTeam";
 import { useAuth } from "../Auth/AuthProvider";
 
 const TeamRegister = () => {
-  const { token } = useAuth();
   const { crearClub, obtenerTeams, editarClub, eliminarClub } = useTeam();
   const [lista, setLista] = useState<Team[]>([]);
   const [query, setQuery] = useState("");

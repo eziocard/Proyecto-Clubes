@@ -28,11 +28,9 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   const [token, setToken] = useState<string | null>(() =>
     localStorage.getItem("token")
   );
-  const [user, setUser] = useState<UserInfo | null>(null);
+  const [, setUser] = useState<UserInfo | null>(null);
 
   const isAuthenticated = !!token;
-
-  const getAccessToken = () => token;
 
   const saveToken = (data: TokenType) => {
     localStorage.setItem("token", data.token);

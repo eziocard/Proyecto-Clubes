@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { LoginSchema, type LoginType } from "../schema/loginScheme";
 import { API_URL } from "../constants";
@@ -12,7 +12,7 @@ type Props = {};
 function Login({}: Props) {
   const auth = useAuth();
   const goTo = useNavigate();
-  const [ErrorResponse, setErrorResponse] = useState("");
+  const [, setErrorResponse] = useState("");
   const {
     register,
     handleSubmit,
@@ -43,6 +43,7 @@ function Login({}: Props) {
         auth.saveToken(json);
         setErrorResponse("");
         goTo("/dashboard");
+        reset();
       } else {
         setErrorResponse(json.message);
       }

@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useUserRegister from "../hooks/useRegister";
-import useUser from "../hooks/useUser";
+
 import { RegisterSchema } from "../schema/UserSchema";
 import type { User } from "../types/types";
 import "./styles/user.css";
 function UserRegister() {
-  const { user } = useUser();
   const { registrarUser, obtenerUsers, editarUser, eliminarUser } =
     useUserRegister();
   const [mensaje, setMensaje] = useState("");

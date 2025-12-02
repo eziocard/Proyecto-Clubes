@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useUser from "../hooks/useUser";
 import useStudent from "../hooks/useStudent";
 import useTeam from "../hooks/useTeam";

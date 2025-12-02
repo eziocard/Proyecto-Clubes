@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import useLevel from "../hooks/useLevel";
 
 function LevelRegister() {
-  const { InfoUser, user, loading, error } = useUser();
+  const { InfoUser, user } = useUser();
   useEffect(() => {
     InfoUser();
   }, []);
@@ -15,7 +15,7 @@ function LevelRegister() {
     register,
     handleSubmit,
     reset,
-    setValue,
+
     formState: { errors },
   } = useForm<Level>({
     resolver: zodResolver(LevelSchema),

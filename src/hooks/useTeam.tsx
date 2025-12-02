@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import type { Team } from "../schema/clubesSchema";
 import { API_URL } from "../constants";
 import { useAuth } from "../Auth/AuthProvider";

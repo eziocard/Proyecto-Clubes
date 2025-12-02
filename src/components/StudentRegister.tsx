@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { StudentSchema, type Student } from "../schema/studentsSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
