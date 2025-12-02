@@ -4,7 +4,6 @@ import { TeamSchema, type Team } from "../schema/clubesSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import "./styles/teamStyles.css";
 import useTeam from "../hooks/useTeam";
-import { useAuth } from "../Auth/AuthProvider";
 
 const TeamRegister = () => {
   const { crearClub, obtenerTeams, editarClub, eliminarClub } = useTeam();
