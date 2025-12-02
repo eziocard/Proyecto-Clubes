@@ -1,0 +1,72 @@
+import { useState } from "react";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "/vite.svg";
+import "./App.css";
+
+interface AuthLogin {
+  email: string;
+  password: string;
+}
+interface tokenType {
+  token: string | null;
+}
+function App() {
+  const [ErrorResponse, setErrorResponse] = useState("");
+  const [token, setToken] = useState<tokenType>();
+  async function onSubmitLogin(data: AuthLogin) {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
+        credentials: "include",
+      });
+
+      const json = await response.json();
+      console.log(json);
+      me(json);
+
+      if (response.ok) {
+        setErrorResponse("");
+      } else {
+        setErrorResponse(json.message);
+      }
+    } catch (error) {
+      console.log("Error en login:", error);
+    }
+  }
+
+  async function me(data: tokenType) {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/me`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${data.token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        console.error("Error:", error);
+        return;
+      }
+
+      const json = await response.json();
+      console.log("Usuario:", json);
+    } catch (err) {
+      console.error("Error de red:", err);
+    }
+  }
+
+  onSubmitLogin({ email: "admin@gmail.com", password: "admin" });
+
+  return <></>;
+}
+
+export default App;
