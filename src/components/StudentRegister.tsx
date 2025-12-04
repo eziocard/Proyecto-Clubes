@@ -162,6 +162,7 @@ const StudentRegister = () => {
               <div className="form-group">
                 <label>Nivel</label>
                 <input
+                  placeholder="Id Nivel"
                   type="number"
                   {...register("level_id", { valueAsNumber: true })}
                   className="form-control"
@@ -175,6 +176,7 @@ const StudentRegister = () => {
                 <div className="form-group">
                   <label>Equipo</label>
                   <input
+                    placeholder="Id equipo"
                     type="number"
                     {...register("team_id", { valueAsNumber: true })}
                     className="form-control"

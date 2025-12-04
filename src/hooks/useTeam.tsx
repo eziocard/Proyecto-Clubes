@@ -7,7 +7,6 @@ function useTeam() {
   const { token } = useAuth();
   const [teams, setTeams] = useState<Team[]>([]);
 
-  // Crear club
   const crearClub = async (data: Team) => {
     try {
       const res = await fetch(`${API_URL}/teams`, {
@@ -30,7 +29,6 @@ function useTeam() {
     }
   };
 
-  // Obtener todos los equipos
   const obtenerTeams = async () => {
     console.log(token);
     try {
@@ -44,7 +42,6 @@ function useTeam() {
     }
   };
 
-  // Editar club
   const editarClub = async (id: number, data: Team) => {
     try {
       const res = await fetch(`${API_URL}/teams/${id}`, {
