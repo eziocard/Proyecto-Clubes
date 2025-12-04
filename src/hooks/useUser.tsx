@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { User } from "../types/types";
 import { useAuth } from "../Auth/AuthProvider";
-
+import {API_URL} from "../constants";
 export default function useUser() {
   const { token } = useAuth();
   const [user, setUser] = useState<User | null>(null);
@@ -11,7 +11,7 @@ export default function useUser() {
   const InfoUser = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://127.0.0.1:8000/api/me`, {
+      const response = await fetch(`${API_URL}/me`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
